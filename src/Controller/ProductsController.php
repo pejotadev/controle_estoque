@@ -23,9 +23,9 @@ class ProductsController extends RestController
             'contain' => ['Subtypes' => ['Types'], 'Users'],
         ]);
 
-        $products = $this->Products->find('all')
-        ->select(['Products.product', 'Subtypes.subtype', 'Users.name', 'Types.type'])
-        ->contain(['Subtypes' => ['Types'], 'Users']);
+        $products = $this->Products->find('all');
+        //->select(['Products.product', 'Subtypes.subtype', 'Users.name', 'Types.type']);
+//        ->contain(['Subtypes' => ['Types'], 'Users']);
 
         $this->set(array(
             'products' => $products,
@@ -60,7 +60,7 @@ class ProductsController extends RestController
         $product = $this->Products->newEntity();
         if ($this->request->is('post')) {
             $message = $product;
-            $product = $this->Products->patchEntity($product, $this->request->getData());
+            $product = $this->Products->newEntity($this->request->getData());
             if ($this->Products->save($product)) {
                 $message = 'Saved';
             }

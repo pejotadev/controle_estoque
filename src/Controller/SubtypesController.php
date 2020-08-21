@@ -55,11 +55,10 @@ class SubtypesController extends RestController
         $message = 'Error';
         $subtype = $this->Subtypes->newEntity();
         if ($this->request->is('post')) {
-            $subtype = $this->Subtypes->patchEntity($subtype, $this->request->getData());
+            $subtype = $this->Subtypes->newEntity($this->request->getData());
             if ($this->Subtypes->save($subtype)) {
                 $message = 'Saved';
             }
-            $this->Flash->error(__('The subtype could not be saved. Please, try again.'));
         }
 
         $this->set(array(

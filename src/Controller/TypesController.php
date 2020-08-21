@@ -82,18 +82,20 @@ class TypesController extends RestController
      */
     public function add()
     {
-        $type = $this->Types->newEntity();
+        $message = 'Error';
         if ($this->request->is('post')) {
-            $type = $this->Types->patchEntity($type, $this->request->getData());
+            $type = $this->Types->newEntity($this->request->getData());
             if ($this->Types->save($type)) {
-                $this->Flash->success(__('The type has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                $message = 'Saved';
             }
-            $this->Flash->error(__('The type could not be saved. Please, try again.'));
         }
-        $users = $this->Types->Users->find('list', ['limit' => 200]);
-        $this->set(compact('type', 'users'));
+
+        $this->set(array(
+            'message' => $message,
+            'subtype' => $type,
+            '_serialize' => array('message')
+        ));
+
     }
 
     /**
@@ -105,20 +107,22 @@ class TypesController extends RestController
      */
     public function edit($id = null)
     {
+        $message = 'Error';
         $type = $this->Types->get($id, [
             'contain' => [],
         ]);
         if ($this->request->is(['patch', 'post', 'put'])) {
             $type = $this->Types->patchEntity($type, $this->request->getData());
             if ($this->Types->save($type)) {
-                $this->Flash->success(__('The type has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+                $message = 'Saved';
             }
-            $this->Flash->error(__('The type could not be saved. Please, try again.'));
         }
-        $users = $this->Types->Users->find('list', ['limit' => 200]);
-        $this->set(compact('type', 'users'));
+
+        $this->set(array(
+            'message' => $message,
+            'subtype' => $type,
+            '_serialize' => array('message')
+        ));
     }
 
     /**
@@ -133,11 +137,15 @@ class TypesController extends RestController
         $this->request->allowMethod(['post', 'delete']);
         $type = $this->Types->get($id);
         if ($this->Types->delete($type)) {
-            $this->Flash->success(__('The type has been deleted.'));
+            $message = 'The type has been deleted.';
         } else {
-            $this->Flash->error(__('The type could not be deleted. Please, try again.'));
+            $message = 'The type could not be deleted. Please, try again.';
         }
 
-        return $this->redirect(['action' => 'index']);
+        $this->set(array(
+            'message' => $message,
+            'name' => $type.type,
+            '_serialize' => array('message')
+        ));
     }
 }
